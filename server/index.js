@@ -18,7 +18,7 @@ server = require('https').createServer({
         ca: fs.readFileSync('/etc/letsencrypt/live/domainNameHere/chain.pem', 'utf8'),
     }, app);
     console.log('Listening for HTTPS 443');
-    server.listen(4443, () => {
+    server.listen(443, () => {
 	console.log('HTTPS Server running on port 443');
 });
 
