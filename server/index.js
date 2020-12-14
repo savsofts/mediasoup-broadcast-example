@@ -11,24 +11,16 @@ const wsServer = require('./wsserver');
 const app = express();
 let server;
 
-if (process.env.HTTPS_HOST) {
-    // HTTPS server.
-    const base = process.env.HTTPS_HOST;
-    const PORT = Number(process.env.PORT) || 443;
-    server = require('https').createServer({
-        cert: fs.readFileSync(`${__dirname}/certs/${base}.crt`),
-        key: fs.readFileSync(`${__dirname}/certs/${base}.key`),
+ 
+server = require('https').createServer({
+        cert: fs.readFileSync('/etc/letsencrypt/live/domainNameHere/cert.pem', 'utf8'),
+        key: fs.readFileSync('/etc/letsencrypt/live/domainNameHere/privkey.pem', 'utf8'),
+        ca: fs.readFileSync('/etc/letsencrypt/live/domainNameHere/chain.pem', 'utf8'),
     }, app);
-    console.log(`Listening for HTTPS on ${process.env.HTTPS_HOST || '0.0.0.0'}:${PORT}`);
-    server.listen(PORT, process.env.HTTPS_HOST);
-}
-else {
-    // HTTP server.
-    const PORT = Number(process.env.PORT) || 80;
-    server = require('http').createServer(app);
-    console.log(`Listening for HTTP on ${process.env.HOST || '0.0.0.0'}:${PORT}`);
-    server.listen(PORT, process.env.HOST);
-}
+    console.log('Listening for HTTPS 443');
+    server.listen(4443, () => {
+	console.log('HTTPS Server running on port 443');
+});
 
 const exst = express.static(`${__dirname}/../app`);
 app.use('/', exst);
